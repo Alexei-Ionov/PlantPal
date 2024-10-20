@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+*.log
+
+# Virtual Environment
+venv/
+env/
+
+
+# MacOS specific files
+.DS_Store
+
+
+# Coverage reports
+coverage/
+*.egg-info/
