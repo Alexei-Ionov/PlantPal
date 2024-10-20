@@ -1,0 +1,4 @@
+run this command to re-init the db: 
+
+
+psql -U postgres -d PlantPal -f ./init_db.sql
