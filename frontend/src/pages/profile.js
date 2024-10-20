@@ -9,7 +9,7 @@ function Profile() {
     // const [loadingFiles, setLoadingFiles] = useState(false);
     // const [viewFilesMsg, setViewFilesMsg] = useState("");
     // const [userRating, setUserRating] = useState(0);
-    const [commentLoading, setCommentLoading] = useState(false);
+    // const [commentLoading, setCommentLoading] = useState(false);
 
     const handleLogoutSubmit = async (event) => { 
         event.preventDefault();
@@ -42,22 +42,14 @@ function Profile() {
             console.log(err.message);
         }
     };   
-
-    if (!userData) { 
-        return (
-            <div>
-                <h1>Loading...</h1>
-            </div>
-        );
-    }
     
     return (
         <div>
             <h1>Profile</h1>
             <br></br>
-            <p>Username: {userData.username}</p>
-            <p>Email: {userData.email}</p>
-            {commentLoading && <h3>Comment Loading...</h3>}
+            <p>Username: {user.username}</p>
+            <p>Email: {user.email}</p>
+            {/* {commentLoading && <h3>Comment Loading...</h3>} */}
             {/* < FilesContainer files={userFiles} ownerRating={userRating} setOwnerRating={setUserRating} setCommentLoading={setCommentLoading}/> */}
             <br></br>
             <br></br>

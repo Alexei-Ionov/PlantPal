@@ -15,8 +15,9 @@ const AuthProvider = ({children}) => {
                 credentials: 'include',
             });
             if (!response.ok) { 
-                const errorMsg = await response.text();
-                return errorMsg;
+                const error = await response.text();
+                console.log(error);
+                return error;
             }
             const userData = await response.json();
             setUser(userData);

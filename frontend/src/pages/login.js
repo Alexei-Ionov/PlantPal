@@ -14,15 +14,17 @@ function Login() {
     setErrorMessage('');
     try { 
         const response = await login({ email, password });
-        /* response = '' if no error, else error message */
         setErrorMessage(response);
-        setEmail('');
-        setPassword('');
-        navigate('/profile');
+        
+        if (!response) { 
+          navigate('/profile');
+          setEmail('');
+          setPassword('');
+        }
+       
     } catch (err) { 
         console.log(err.message);
         setErrorMessage(err.message);
-        
     }
     
   };
