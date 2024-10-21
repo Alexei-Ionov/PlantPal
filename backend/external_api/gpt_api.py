@@ -8,8 +8,8 @@ client = OpenAI(
 )
 def get_plant_info_api(plant):
     json_ = {
-        "plant_name": "[Plant Name]",
-        "desired_soil_moisture": "[Value from 0.0 to 10.0]",
+        "plant_name": f"[{plant}]",
+        "desired_soil_moisture": "[Single value from 0.0 to 10.0]",
         "genus": "[Genus Name]",
         "family": "[Family Name]",
         "edible": "[Yes/No]",
@@ -19,7 +19,7 @@ def get_plant_info_api(plant):
         "average_height": "[Float Value]",
         "Light": "[None/Low/Medium/High]"
     }
-    prompt = f"Given the common name of the plant, provide detailed information about it in the following json format: {json_}"
+    prompt = f"Given the common name of the plant, {plant}, provide detailed information about it in the following json format: {json_}"
     try: 
         chat_completion = client.chat.completions.create(
             messages=[

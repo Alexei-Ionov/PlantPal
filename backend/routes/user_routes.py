@@ -45,7 +45,7 @@ def signup():
         password_bytes = password1.encode('utf-8')
         hashed_password = bcrypt.hashpw(password_bytes, bcrypt.gensalt()).decode('utf-8') 
         response = create_user(username, hashed_password, email)
-        return jsonify(response)
+        return jsonify(response), 201
         
         
 
@@ -97,7 +97,6 @@ def login():
             raise InvalidPassword("Invalid password")
 
         session["user_id"] = user_id
-        print("session right after logging in:", session)
         return jsonify({"username": username, "email": email})
     except InvalidPassword as e:
         print(e)
@@ -131,12 +130,14 @@ AUTHENTICATED ROUTES
 def add_user_plant():
     try: 
         user_id = session["user_id"]
-        plant = request.json["plant"]
-        nickname = request.json["nickname"] #nickname can be empty!
-        if not plant:
-            raise InvalidInputError("Missing plant name")
-        desired_soil_moisture = add_plant_service(plant, nickname, user_id)
-        return jsonify({"desired_soil_moisture": desired_soil_moisture})
+        req_info = request.json
+
+        if "plant" not in req_info:
+            raise InvalidInputError("Missing plant name for adding user plant")
+
+        plant, nickname = req_info["plant"], req_info["nickname"] #nickname can be empty!
+        token = add_plant_service(plant, nickname, user_id)
+        return jsonify({"message": "Successfully added plant!", "token": token}), 201
         
     except InvalidInputError:
         return jsonify({
@@ -160,6 +161,7 @@ def add_user_plant():
 @app.route('/my_plants', methods=['GET'])
 def get_user_plants():
     try: 
+        
         user_id = session["user_id"]
         result = get_plants(user_id) #result is a list of dictionaries that represent the current status of all the user's plants
         return jsonify(result)
@@ -182,6 +184,21 @@ def get_user_plants():
             }
         }), 500
 
+@app.route('/my_tokens', methods=["GET"])
+def get_user_tokens():
+    try: 
+        user_id = session["user_id"]
+        tokens = get_tokens(user_id)
+        return jsonify(tokens)
+
+    except Exception as e:
+        print(e)
+        return jsonify({
+            "error": {
+                "code": 500, 
+                "message": str(e)
+            }
+        }), 500
 
 
 @app.route('/')

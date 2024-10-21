@@ -4,6 +4,10 @@ class InvalidPassword(Exception):
     pass
 class APIFail(Exception):
     pass
+class InvalidSensorReq(Exception):
+    pass
+class MissingParamterReq(Exception):
+    pass
 class JsonException(Exception):
     def __init__(self, error_info):
         self.error_info = error_info

@@ -1,6 +1,7 @@
 from psycopg2.errors import UniqueViolation
 from backend.Exceptions import *
 from backend.models.perform_query import perform_query
+import uuid
 def create_user(username, hashed_password, email):
     sql = """INSERT INTO users (username, hashed_password, email, created_at) VALUES (%s, %s, %s, CURRENT_TIMESTAMP) """
     params = (username, hashed_password, email)
@@ -37,18 +38,29 @@ def get_plants(user_id):
     except Exception as e:
         raise Exception
 
-def add_plant(user_id, plant_name, nickname):
-    sql = """ INSERT INTO user_plants (common_name, nickname, current_moisture)
-     id SERIAL PRIMARY KEY,
-    common_name VARCHAR(255) NOT NULL,
-    nickname VARCHAR(255),
-    current_moisture FLOAT NOT NULL,
-    desired_soil_moisture FLOAT NOT NULL,
-    last_update TIMESTAMP, 
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
-    ); 
-    """
+def get_tokens(user_id):
+    sql = """ SELECT token_id FROM user_plants WHERE user_id = %s"""
+    params = (user_id,)
+    try:
+        tokens = perform_query(sql, params)
+        print(tokens)
+        return tokens
+    except Exception as e:
+        raise e
 
+def add_plant(user_id, plant_name, nickname, desired_soil_moisture):
+    #query for adding plant to user_plants table -> return the plant_id to be used for creating the token
+    try: 
+        token = str(uuid.uuid4())
+        sql = """ INSERT INTO user_plants (common_name, token_id, nickname, desired_soil_moisture, user_id) VALUES (%s, %s, %s, %s, %s) """
+        params = (plant_name, token, nickname, desired_soil_moisture, user_id)
+        perform_query(sql, params)
+        return token 
+    except Exception as e:
+        print(e)
+        raise e
+
+    
 
    
 

@@ -1,6 +1,5 @@
 from backend.database.db import get_connection
 from backend.database.db import release_connection
-
 def perform_query(query, params=None):
     cursor = None
     connection = None
@@ -12,11 +11,11 @@ def perform_query(query, params=None):
         if not cursor:
             raise Exception("Failed to get cursor for connection to db")
         cursor.execute(query, params)
-        if query.strip().upper().startswith("SELECT"):
+        connection.commit()
+        if query.strip().upper().startswith("SELECT") or "RETURNING" in query.upper():
+            #if we expect some output
             results = cursor.fetchall()
             return results
-        else:
-            connection.commit()
     except Exception as e:
         print(e)
         raise e
