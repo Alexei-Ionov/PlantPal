@@ -35,7 +35,8 @@ async def get_data(token_heap, request_state, index, token, lock):
                 if response.status != 200:
                     print(response)
                     raise Exception(f"Failed to retieve data for page: {page}")
-                plants = await response.json()
+                data = await response.json()
+                plants = data["data"]
                 names = []
                 for plant in plants:
                     if plant["common_name"]:

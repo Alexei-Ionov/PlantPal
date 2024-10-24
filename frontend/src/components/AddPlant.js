@@ -7,28 +7,44 @@ function AddPlant() {
     const [loadingMsg, setLoadingMsg] = useState('')
     const [trie, setTrie] = useState({})
     const [suggestions, setSuggestions] = useState([]);
+    let CURRENT_SUGGESTIONS = [];
     const SUGGESTION_LIMIT = 10;
     const recurseTrie = (root, prefix) => { 
-        if (suggestions.length >= SUGGESTION_LIMIT) { 
+        if (CURRENT_SUGGESTIONS.length >= SUGGESTION_LIMIT) { 
             return;
         }
         // If the end of a word is found, add it to the suggestions list
         if (root.hasOwnProperty("*")) { 
-            suggestions.push(prefix);  // 'setSuggestions' is not valid in this context
+            CURRENT_SUGGESTIONS.push(prefix);
         }
         // Iterate over each letter in the current node
         for (const letter in root) { 
-            if (letter !== "*") {  // Avoid treating the '*' key as a child node
+            if (letter !== "*") {  
                 recurseTrie(root[letter], prefix + letter);
             }
         }
     }
-
-    const getSuggestions = (event) => { 
-        event.preventDefault();
-
-
+    
+    const getSuggestions = (current_input) => { 
+        CURRENT_SUGGESTIONS = []
+        console.log(current_input);
+        if (current_input === '') { 
+            setSuggestions([]);
+            return;
+        }
+        let root = trie;
+        for (const letter of current_input) { 
+            if (!(letter in root)) {  //no matching prefix
+                setSuggestions([]);
+                return;
+            }
+            root = root[letter];
+        }
+        //otherwise, user input is a valid prefix
+        recurseTrie(root, current_input);
+        setSuggestions(CURRENT_SUGGESTIONS); 
     }
+    
 
     const fetchTrie = async () => { 
         try { 
@@ -60,6 +76,11 @@ function AddPlant() {
         get_trie();
     }, [])
 
+    useEffect(() => {
+        // Effect will run whenever `suggestions` array is updated
+    }, [suggestions]); // This dependency array listens to changes in suggestions
+    
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         setSuccessMsg('');
@@ -82,6 +103,7 @@ function AddPlant() {
             setSuccessMsg('Plant Added!');
         } catch (err) { 
             console.log(err.message);
+            setErrorMsg(err.message);
             return 
         }
     };
@@ -93,9 +115,11 @@ function AddPlant() {
         id="plant"
         name="plant"
         value={plant}
-        onChange={(e) => 
-                    getSuggestions(e.target.value)
-                }
+        onChange={(e) => {
+            const inputValue = e.target.value;
+            setPlant(inputValue);
+            getSuggestions(inputValue);
+        }}
         required
         />
         <br />
@@ -114,7 +138,11 @@ function AddPlant() {
         <p>{loadingMsg}</p>
         <p>{successMsg}</p>
         <p>{errorMsg}</p>
-
+        {suggestions.map((suggestion, index) => (
+            <div key={index} style={{ marginBottom: '20px', width: '100%' }}>
+                <h1>{suggestion}</h1>  {/* Use curly braces to render the actual suggestion */}
+            </div>
+        ))}
     </form>
     );
 };
