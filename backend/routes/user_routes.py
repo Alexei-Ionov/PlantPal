@@ -203,7 +203,7 @@ def get_user_tokens():
 @app.route('/fetch_trie', methods=["GET"])
 def get_trie():
     try:
-        with open('/Users/alexeiionov/Desktop/projects/PlantPal/backend/data_scrape/saved_trie.json', 'r') as json_file:
+        with open('/Users/alexeiionov/Desktop/projects/PlantPal/backend/data_scrape/trie.json', 'r') as json_file:
             trie = json.load(json_file)
             return jsonify(trie), 201
     except Exception as e:
