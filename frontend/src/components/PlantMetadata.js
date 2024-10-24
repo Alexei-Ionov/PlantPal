@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useTransition } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { Link } from 'react-router-dom';
-import '../css/fileMetadata.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -55,12 +54,7 @@ function PlantMetadata({ plant }) {
               </div>
               {/* <Link to={`/viewProfile/${file.ownerid}`} className="file-link-style"> Uploaded by {file.owner}</Link> */}
               {/* <h5> {commentCount} Comments</h5> */}
-              <button onClick={()=> {
-    
-                handleViewComments();
-                }}>{<FontAwesomeIcon icon={faComment}/>}</button>
-              {commentButton && (<CommentBox fileid={file.fileid} parentid={-1} setCommentCount={setCommentCount} setNestedComments={setComments}/>)}
-              {commentButton && (<CommentContainer comments={comments} setCommentCount={setCommentCount} fileid={file.fileid}/>)}
+              <h1>{plant.nickname}</h1>
             </div>
           }
         </div>

@@ -24,20 +24,7 @@ def add_plant_species(plant_info):
     except Exception as e:
         print(e)
         raise e
-    CREATE TABLE plant_species (
-    id SERIAL PRIMARY KEY,
-    common_name VARCHAR(255) NOT NULL,
-
-    genus VARCHAR(255),
-    family VARCHAR(255),
-    edible VARCHAR(255),
-    image_url VARCHAR(255),
-    growth_rate VARCHAR(255),
-    toxicity VARCHAR(255),
-    average_height VARCHAR(255), 
-    light VARCHAR(255),
-    desired_soil_moisture VARCHAR(255)
-);
+    
 def get_info(plant_name):
     sql = """ SELECT (common_name, genus, family, edible, image_url, growth_rate, toxicity, average_height, light, desired_soil_moisture) FROM plant_species WHERE common_name = %s """
     params = (plant_name,)

@@ -200,6 +200,20 @@ def get_user_tokens():
             }
         }), 500
 
+@app.route('/fetch_trie', methods=["GET"])
+def get_trie():
+    try:
+        with open('/Users/alexeiionov/Desktop/projects/PlantPal/backend/data_scrape/trie.json', 'r') as json_file:
+            trie = json.load(json_file)
+            return jsonify(trie), 201
+    except Exception as e:
+        print(e)
+        return jsonify({
+            "error": {
+                "code": 500, 
+                "message": str(e)
+            }
+        }), 500
 
 @app.route('/')
 def index():
