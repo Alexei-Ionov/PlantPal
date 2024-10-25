@@ -17,10 +17,10 @@ def get_cached_soil_moisture(plant):
 def add_plant_species(plant_info):
     sql = """ INSERT INTO plant_species (common_name, genus, family, edible, image_url, growth_rate, toxicity, average_height, light, desired_soil_moisture) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
     try: 
-        common_name, desired_soil_moisture, genus, family, edible, image_url, growth_rate, toxicity, average_height, light = plant_info["plant_name"], plant_info["desired_soil_moisture"], plant_info["genus"], plant_info["family"], plant_info["edible"], plant_info["image_url"], plant_info["growth_rate"], plant_info["toxicity"], plant_info["average_height"], plant_info["Light"] 
+        common_name, desired_soil_moisture, genus, family, edible, image_url, growth_rate, toxicity, average_height, light = plant_info.get("plant_name"), plant_info.get("desired_soil_moisture"), plant_info.get("genus"), plant_info.get("family"), plant_info.get("edible"), plant_info.get("image_url"), plant_info.get("growth_rate"), plant_info.get("toxicity"), plant_info.get("average_height"), plant_info.get("Light")
         params = (common_name, genus, family, edible, image_url, growth_rate, toxicity, average_height, light, desired_soil_moisture)
         perform_query(sql, params)
-        return soil_moisture
+        return desired_soil_moisture
     except Exception as e:
         print(e)
         raise e

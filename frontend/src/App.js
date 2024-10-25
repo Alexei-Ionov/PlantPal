@@ -5,7 +5,7 @@ import Profile from './pages/profile';
 import NavBar from './components/Navbar';
 import Login from './pages/login';
 import SignUp from './pages/signup';
-
+import AddPlant from './pages/addPlant';
 import MyPlants from './pages/myPlants';
 import { AuthProvider } from './components/AuthContext';
 function App() {
@@ -20,6 +20,7 @@ function App() {
             <Route path="/login" element={<Login/>}/>
             <Route path="/signup" element={<SignUp/>}/>
             <Route path="/my_plants" element={<MyPlants/>}/>
+            <Route path="/add_plant" element={<AddPlant/>}/>
           </Routes>
         </div>
       </Router>

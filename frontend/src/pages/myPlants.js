@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import PlantsContainer from '../components/PlantsContainer';
-import AddPlant from '../components/AddPlant';
-
 function MyPlants() {
     const [userPlants, setUserPlants] = useState([])
 
@@ -24,7 +22,7 @@ function MyPlants() {
                 setErrorMsg(message); 
                 throw new Error("Failed to fetch user plants");
             }
-            const plants = response.json();
+            const plants = await response.json();
             setUserPlants(plants);
         } catch (err) { 
             console.log(err)
@@ -45,11 +43,9 @@ function MyPlants() {
             <h1>My plants</h1>
             <br></br>
             {loadingPlants && <h1> Loading plants...</h1> }
-            {userPlants.length  && <PlantsContainer plants = {userPlants}/>}
+            {userPlants.length > 0  && <PlantsContainer plants = {userPlants}/>}
             <br></br>
-            {<AddPlant />}
-           
-            
+                
         </div>
     )
 

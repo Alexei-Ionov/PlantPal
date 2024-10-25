@@ -27,24 +27,26 @@ def login_user(email, plain_text_password):
         raise e
 
 def get_plants(user_id):
-    sql = """ SELECT nickname, current_moisture, desired_soil_moisture, last_update FROM user_plants WHERE user_id = %s """
+    sql = """ SELECT nickname, current_moisture, desired_soil_moisture, last_update, esp32_ip FROM user_plants WHERE user_id = %s """
     params = (user_id,)
     try: 
         plants = perform_query(sql, params)
         result = []
-        for nickname, current_moisture, desired_soil_moisture, last_update in plants:
-            result.append({"nickname": nickname, "current_moisture": current_moisture, "desired_soil_moisture": desired_soil_moisture, "last_update": last_update})
+        for nickname, current_moisture, desired_soil_moisture, last_update, esp32_ip in plants:
+            result.append({"nickname": nickname, "current_moisture": current_moisture, "desired_soil_moisture": desired_soil_moisture, "last_update": last_update, "esp32_ip": esp32_ip})
         return result
     except Exception as e:
         raise Exception
 
 def get_tokens(user_id):
-    sql = """ SELECT token_id FROM user_plants WHERE user_id = %s"""
+    sql = """ SELECT token_id, esp32_ip FROM user_plants WHERE user_id = %s"""
     params = (user_id,)
     try:
         tokens = perform_query(sql, params)
-        print(tokens)
-        return tokens
+        result = []
+        for token_id, esp32_ip in tokens:
+            result.append({"token_id": token_id, "esp32_ip": esp32_ip})
+        return result
     except Exception as e:
         raise e
 

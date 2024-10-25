@@ -29,6 +29,7 @@ CREATE TABLE plant_species (
 CREATE TABLE user_plants (
     id SERIAL PRIMARY KEY,
     token_id VARCHAR(255) UNIQUE NOT NULL,
+    esp32_ip VARCHAR(255),
     common_name VARCHAR(255) NOT NULL,
     nickname VARCHAR(255),
     current_moisture VARCHAR(255),

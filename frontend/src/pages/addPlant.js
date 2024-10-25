@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import SuggestionItem from '../components/SuggestionItem';
+
 function AddPlant() { 
     const [plant, setPlant] = useState('')
     const [nickname, setNickname] = useState('')
@@ -17,7 +19,6 @@ function AddPlant() {
         if (root.hasOwnProperty("*")) { 
             CURRENT_SUGGESTIONS.push(prefix);
         }
-        // Iterate over each letter in the current node
         for (const letter in root) { 
             if (letter !== "*") {  
                 recurseTrie(root[letter], prefix + letter);
@@ -27,6 +28,7 @@ function AddPlant() {
     
     const getSuggestions = (current_input) => { 
         CURRENT_SUGGESTIONS = []
+        current_input = current_input.toLowerCase();
         console.log(current_input);
         if (current_input === '') { 
             setSuggestions([]);
@@ -67,6 +69,11 @@ function AddPlant() {
         } finally {
             setLoadingMsg('')
         }
+    };
+
+    const handleSuggestionSelect = (suggestion) => {
+        setPlant(suggestion);  // Set the plant input to the selected suggestion
+        setSuggestions([]);  // Clear suggestions
     };
 
     useEffect(() => {
@@ -138,11 +145,15 @@ function AddPlant() {
         <p>{loadingMsg}</p>
         <p>{successMsg}</p>
         <p>{errorMsg}</p>
-        {suggestions.map((suggestion, index) => (
-            <div key={index} style={{ marginBottom: '20px', width: '100%' }}>
-                <h1>{suggestion}</h1>  {/* Use curly braces to render the actual suggestion */}
-            </div>
-        ))}
+        <div className="suggestions-container">
+                {suggestions.map((suggestion, index) => (
+                    <SuggestionItem
+                        key={index}
+                        suggestion={suggestion}
+                        onSelect={handleSuggestionSelect}
+                    />
+                ))}
+        </div>
     </form>
     );
 };

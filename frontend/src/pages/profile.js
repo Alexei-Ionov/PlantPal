@@ -1,16 +1,38 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect} from 'react';
 import { AuthContext } from '../components/AuthContext'; 
 import { useNavigate } from 'react-router-dom';
+import TokensContainer from '../components/TokensContainer'; 
 function Profile() { 
     const { user, logout} = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
     const navigate = useNavigate(); // Get the history instance
-    // const [userFiles, setUserFiles] = useState([]);
-    // const [loadingFiles, setLoadingFiles] = useState(false);
-    // const [viewFilesMsg, setViewFilesMsg] = useState("");
-    // const [userRating, setUserRating] = useState(0);
-    // const [commentLoading, setCommentLoading] = useState(false);
-
+    const [errorMsg, setErrorMsg] = useState('');
+    const [tokens, setTokens] = useState([]);
+    const fetchUserTokens = async () => { 
+        setErrorMsg('')
+        try { 
+            const response = await fetch(`http://127.0.0.1:5000/my_tokens`, { 
+                method: 'GET',
+                credentials: 'include',
+            });
+            if (!response.ok) { 
+                console.log("Failed to fetch user tokens");
+                throw new Error(response.message);
+            }
+            const tokens = await response.json();
+            setTokens(tokens);            
+        } catch (err) {
+            console.log(err.message);
+            setErrorMsg(err.message);
+        } 
+    };
+    
+    useEffect(() => { 
+        const get_tokens = async () => {
+            await fetchUserTokens();
+        };
+        get_tokens();
+    }, []);
     const handleLogoutSubmit = async (event) => { 
         event.preventDefault();
         try { 
@@ -22,39 +44,16 @@ function Profile() {
             console.log(err.message);
         }
     }
-    const fetchUserData = async () => { 
-        console.log('fetching user profile...');
-        try { 
-            const params = new URLSearchParams({
-                ownerid: `${user.userID}`
-            })
-            const response = await fetch(`http://localhost:8000/profile?${params.toString()}`, { 
-                method: 'GET',
-                credentials: 'include',
-            });
-            if (!response.ok) { 
-                console.log("Failed to fetch user profile");
-                throw new Error("Failed to fetch user profile");
-            }
-            const profile = await response.json();
-            setUserData(profile);            
-        } catch (err) {
-            console.log(err.message);
-        }
-    };   
-    
     return (
         <div>
             <h1>Profile</h1>
             <br></br>
             <p>Username: {user.username}</p>
             <p>Email: {user.email}</p>
-            {/* {commentLoading && <h3>Comment Loading...</h3>} */}
-            {/* < FilesContainer files={userFiles} ownerRating={userRating} setOwnerRating={setUserRating} setCommentLoading={setCommentLoading}/> */}
+            <p>{errorMsg}</p>
             <br></br>
-            <br></br>
-            {/* {viewFilesMsg && <p>{viewFilesMsg}</p>}
-            {loadingFiles && <p>Loading files...</p>} */}
+            <h3>Tokens:</h3>
+            {tokens && <TokensContainer tokens={tokens} />}
             <br></br>
             <button onClick={handleLogoutSubmit}>Logout</button>
         </div>

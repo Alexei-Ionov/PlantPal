@@ -11,10 +11,13 @@ const NavBar = () => {
         <nav>
             <ul>
                 <li><Link to="/">Home</Link></li>
-                <li>{user && <Link to="/my_plants"></Link>}</li>
+                <li>{user && <Link to="/my_plants">My Plants</Link>}</li>
+                <li>{user && <Link to="/add_plant">Add Plant</Link>}</li>
                 <li>
                     {user ? (<Link to="/profile">{<FontAwesomeIcon icon={faUser} />}</Link>) : (<Link to="/login">Login</Link>)}
                 </li>
+                
+
 
             </ul>
         </nav>
