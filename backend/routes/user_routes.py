@@ -97,6 +97,7 @@ def login():
             raise InvalidPassword("Invalid password")
 
         session["user_id"] = user_id
+        session["user_email"] = email
         return jsonify({"username": username, "email": email})
     except InvalidPassword as e:
         print(e)
@@ -215,6 +216,34 @@ def get_trie():
             }
         }), 500
 
+@app.route('/add_calendar', methods=["POST"])
+def add_event_to_calendar():
+    try: 
+        plant_info = request.json
+        user_id = session["user_id"]
+        user_email = session["user_email"]
+        if "plant" not in plant_info or "nickname" not in plant_info:
+            raise InvalidInputError("Missing fields in request")
+        add_event_service(user_id, user_email, plant_info["plant"], plant_info["nickname"])
+        return jsonify({"message": "successfully added water schedule to google calendar"}), 201
+    except InvalidInputError as e:
+        print(e)
+        return jsonify({
+            "error": {
+                "code": 401, 
+                "message": str(e)
+            }
+        }), 401
+
+        
+    except Exception as e:
+        print(e)
+        return jsonify({
+            "error": {
+                "code": 500, 
+                "message": str(e)
+            }
+        }), 500
 @app.route('/')
 def index():
     return "hello world!"

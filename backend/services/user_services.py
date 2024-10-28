@@ -1,4 +1,5 @@
-from backend.external_api.gpt_api import get_plant_info_api
+from backend.external_api.gpt_api import *
+from backend.external_api.google_calendar.google_calendar_api import *
 from backend.models.plant_species_model import *
 from backend.models.user_model import add_plant
 import json
@@ -21,6 +22,23 @@ def add_plant_service(plant, nickname, user_id):
         token = add_plant(user_id, plant, nickname, desired_soil_moisture)
         return token
     except Exception as e:
-        print(e)
         raise e
+
+def add_event_service(user_id, user_email, plant, plant_nickname):
+    try: 
+        api_response = get_watering_schedule_api(plant)
+        plant_info = json.loads(api_response)
+        print(plant_info)
+        if "recurrence" not in plant_info or "amount" not in plant_info:
+            raise Exception("Failed api response")
+        possible_recurrences = {"DAILY", "WEEKLY", "MONTHLY", "YEARLY"}
+        if plant_info["recurrence"] not in possible_recurrences:
+            raise Exception("Failed api response")
+        possible_watering_amounts = {"LIGHT", "MEDIUM", "HEAVY"}
+        if plant_info["amount"] not in possible_watering_amounts:
+            raise Exception("Failed api response")
+        create_event(user_id, user_email, plant_nickname, plant_info["recurrence"], plant_info["amount"])
+    except Exception as e:
+        raise e
+
 
