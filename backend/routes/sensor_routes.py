@@ -6,6 +6,7 @@ from backend.models.sensor_updates import check_token_and_process_update
 
 @app.route('/update_sensor_reading', methods = ["POST"])
 def update_sensor_reading():
+    print("GOT SENSOR READING")
     try: 
         sensor_data = request.json
         if "soil_moisture" not in sensor_data:

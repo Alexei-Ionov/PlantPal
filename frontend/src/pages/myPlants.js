@@ -13,7 +13,7 @@ function MyPlants() {
         console.log("fetching user plants");
         setLoadingPlants(true);
         try { 
-            const response = await fetch("http://127.0.0.1:5000/my_plants", {
+            const response = await fetch("http://127.0.0.1:6969/my_plants", {
                 method: 'GET',
                 credentials: 'include'
             });

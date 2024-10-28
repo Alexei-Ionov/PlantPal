@@ -11,7 +11,7 @@ function Profile() {
     const fetchUserTokens = async () => { 
         setErrorMsg('')
         try { 
-            const response = await fetch(`http://127.0.0.1:5000/my_tokens`, { 
+            const response = await fetch(`http://127.0.0.1:6969/my_tokens`, { 
                 method: 'GET',
                 credentials: 'include',
             });

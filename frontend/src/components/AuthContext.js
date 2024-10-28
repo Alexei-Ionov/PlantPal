@@ -8,7 +8,7 @@ const AuthProvider = ({children}) => {
         const {email, password} = loginInfo;
         
         try { 
-            const response = await fetch('http://127.0.0.1:5000/login', { 
+            const response = await fetch('http://127.0.0.1:6969/login', { 
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ email: email, password: password }),
@@ -30,7 +30,7 @@ const AuthProvider = ({children}) => {
     };
     const logout = async () => { 
         try {
-            const response = await fetch('http://127.0.0.1:5000/logout', {
+            const response = await fetch('http://127.0.0.1:6969/logout', {
                 method: 'POST',
                 credentials: 'include',
             });

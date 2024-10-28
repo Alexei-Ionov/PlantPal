@@ -51,7 +51,7 @@ function AddPlant() {
     const fetchTrie = async () => { 
         try { 
             setLoadingMsg('Loading search engine...');
-            const response = await fetch("http://127.0.0.1:5000/fetch_trie", {
+            const response = await fetch("http://127.0.0.1:6969/fetch_trie", {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -93,7 +93,7 @@ function AddPlant() {
         setSuccessMsg('');
         setErrorMsg('');
         try { 
-            const response = await fetch("http://127.0.0.1:5000/add_plant", {
+            const response = await fetch("http://127.0.0.1:6969/add_plant", {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ plant: plant, nickname: nickname }),
