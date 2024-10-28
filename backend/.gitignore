@@ -10,9 +10,10 @@ __pycache__/
 venv/
 env/
 
-backend/external_api/google_calendar/credentials.json
-backend/external_api/google_calendar/token*
-
+# backend/external_api/google_calendar/credentials.json
+# backend/external_api/google_calendar/token*
+credentials.json
+token*
 
 # MacOS specific files
 .DS_Store
