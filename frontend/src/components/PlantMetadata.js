@@ -24,11 +24,22 @@ function PlantMetadata({ plant }) {
                 console.log(err)
                 throw new Error("Failed to connect to esp32");
             }
+
+            const updateResponse = await fetch(`http:127.0.0.1//:6969/add_esp`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ esp32_ip: espIP, token: plant.token}),
+            });
+            if (!updateResponse.ok) {
+                const err = await updateResponse.json();
+                console.log(err)
+                throw new Error("Failed to update server with esp32 connection");
+            }
+            plant.esp32_ip = espIP;
             console.log("successfully connected!");
             setSuccessMsg("successfully connected!");
-    
+
         } catch (err) { 
-            console.log(err);
             setErrorMsg(err);
         }
     }
@@ -144,7 +155,10 @@ function PlantMetadata({ plant }) {
                                     
                                     <button 
                                         className="connect-button" 
-                                        onClick={() => setFindESP(!findESP)}
+                                        onClick={() => {
+                                            setFindESP(!findESP);
+                                            setSuccessMsg('');
+                                        }}
                                     >
                                         Connect to ESP32
                                     </button>

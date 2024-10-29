@@ -8,8 +8,6 @@ load_dotenv()
 session_key = os.getenv('FLASK_SESSION_KEY')
 app = Flask(__name__)
 app.secret_key = session_key
-#CORS(app)  # Enable CORS for all routes
-# CORS(app, resources={r"/*": {"origins": "*", "methods": ["POST", "GET", "OPTIONS"]}})
 CORS(app, supports_credentials=True)  # Allow credentials to be included
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 app.config['SESSION_COOKIE_SECURE'] = True  # This requires HTTPS

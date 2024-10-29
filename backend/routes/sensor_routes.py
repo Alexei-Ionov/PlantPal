@@ -4,9 +4,43 @@ from backend.models.user_model import *
 from backend.Exceptions import *
 from backend.models.sensor_updates import check_token_and_process_update
 
+@app.route('/add_esp', methods=["POST"])
+def add_esp():
+    try: 
+        user_id = session["user_id"]
+        esp_info = request.json
+        if "esp32_ip" not in esp_info:
+            raise Exception InvalidInputError("Missing esp ip")
+        if "token" not in esp_info:
+            raise Exception InvalidInputError("Missing token")
+        esp32_ip = esp_info["esp32_ip"]
+        token = esp_info["token"]
+        add_esp_to_user_plant(user_id, token, esp32_ip)
+        
+        return jsonify({
+            "message": "successfully updated esp ip for user plant"
+        }), 201
+
+
+    except InvalidInputError as e:
+        print(e)
+        return jsonify({
+            "error": {
+                "code": 401, 
+                "message": str(e)
+            }
+        }), 401
+    except Exception as e:
+        print(e)
+        return jsonify({
+            "error": {
+                "code": 500, 
+                "message": str(e)
+            }
+        }), 500
+
 @app.route('/update_sensor_reading', methods = ["POST"])
 def update_sensor_reading():
-    print("GOT SENSOR READING")
     try: 
         sensor_data = request.json
         if "soil_moisture" not in sensor_data:

@@ -61,6 +61,13 @@ def add_plant(user_id, plant_name, nickname, desired_soil_moisture):
     except Exception as e:
         print(e)
         raise e
+def add_esp_to_user_plant(user_id, token, esp32_ip):
+    try: 
+        sql = """ UPDATE user_plants SET esp32_ip = %s WHERE token_id = %s AND user_id = %s """
+        params = (esp32_ip, token, user_id)
+        perform_query(sql, params)
+    except Exception as e:
+        raise e
 
     
 
