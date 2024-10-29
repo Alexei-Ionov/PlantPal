@@ -23,6 +23,7 @@ function MyPlants() {
                 throw new Error("Failed to fetch user plants");
             }
             const plants = await response.json();
+            console.log(plants);
             setUserPlants(plants);
         } catch (err) { 
             console.log(err)

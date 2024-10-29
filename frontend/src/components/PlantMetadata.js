@@ -5,23 +5,57 @@ import '../css/PlantMetadata.css'; // CSS for hover effect
 
 function PlantMetadata({ plant }) {
     const [errorMsg, setErrorMsg] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
     const [plantInfo, setPlantInfo] = useState({});
+    const [findESP, setFindESP] = useState(false);
+    const [espIP, setEspIP] = useState("");
+    const handleConnect = async (event) => { 
+        event.preventDefault();
+        setErrorMsg('');
+        setSuccessMsg('');
+        try { 
+            const response = await fetch(`http://${espIP}:80/connect`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ token: plant.token }),
+            });
+            if (!response.ok) {
+                const err = await response.json();
+                console.log(err)
+                throw new Error("Failed to connect to esp32");
+            }
+            console.log("successfully connected!");
+            setSuccessMsg("successfully connected!");
+    
+        } catch (err) { 
+            console.log(err);
+            setErrorMsg(err);
+        }
+    }
 
-    const getPlantInfo = async () => {
+    const getPlantInfo = async (event) => {
+        event.preventDefault();
+        if (Object.keys(plantInfo).length !== 0) { 
+            setPlantInfo({});
+            return
+        }
+
+        console.log("fetching plant info");
         setErrorMsg('');
         setPlantInfo({});
         try {
             const params = new URLSearchParams({
                 plant: `${plant.common_name}`
             });
-            const response = await fetch(`https://127.0.0.1:5000/about_plant?${params.toString()}`, { 
+            const response = await fetch(`http://127.0.0.1:6969/about_plant?${params.toString()}`, { 
                 method: 'GET',
                 credentials: 'include',
             });
             if (!response.ok) {
                 throw new Error("Failed to get plant info");
             }
-            setPlantInfo(response.json());
+            const data = await response.json();
+            setPlantInfo(data);
         } catch (err) {
             console.log(err);
             setErrorMsg(err.message);
@@ -61,7 +95,7 @@ function PlantMetadata({ plant }) {
                         }}
                         onClick={getPlantInfo}
                     >
-                        About Plant <FontAwesomeIcon icon={faUpRightFromSquare} />
+                        About {plant.common_name} <FontAwesomeIcon icon={faUpRightFromSquare} />
                     </div>
 
                     {/* Nickname */}
@@ -101,16 +135,58 @@ function PlantMetadata({ plant }) {
                             <span>0.0</span>
                             <span>10.0</span>
                         </div>
-                        <div class="plant-status">
-                            <p class="moisture-level">Desired Moisture: {plant.desired_soil_moisture}</p>
+                        <div className="plant-status">
+                            <p className="moisture-level">Desired Moisture: {plant.desired_soil_moisture}</p>
                             {plant.esp32_ip ? (
-                                <h3 class="connection-status">Connected to, {plant.esp32_ip}</h3>
+                                <h3 className="connection-status">Connected to {plant.esp32_ip}</h3>
                             ) : (
-                                <h3 class="connection-status">Not Connected</h3>
+                                <h3 className="connection-status">
+                                    
+                                    <button 
+                                        className="connect-button" 
+                                        onClick={() => setFindESP(!findESP)}
+                                    >
+                                        Connect to ESP32
+                                    </button>
+                                </h3>
                             )}
                         </div>
+
                     </div>
+                    {Object.keys(plantInfo).length !== 0 && 
+                        <div>
+                            <h1>ABOUT</h1>
+                            {plantInfo.common_name && <h3>Common Name: {plantInfo.common_name}</h3>}
+                            {plantInfo.genus && <h3>Genus: {plantInfo.genus}</h3>}
+                            {plantInfo.family && <h3>Family: {plantInfo.family}</h3>}
+                            {plantInfo.growth_rate && <h3>Growth rate: {plantInfo.growth_rate}</h3>}
+                            {plantInfo.average_height &&  <h3>Average Height: {plantInfo.average_height}</h3>}
+                            {plantInfo.light && <h3>Optimal Lighting: {plantInfo.light}</h3> }
+                            {plantInfo.desired_soil_moisture && <h3>Desired Soil Moisture: {plantInfo.desired_soil_moisture}</h3>}
+                            {plantInfo.toxicity && <h3>Toxicity: {plantInfo.toxicity}</h3>}
+                            {plantInfo.edible && <h3>Edible: {plantInfo.edible}</h3>}
+                            {/* {plantInfo.image_url && <h3>Image url: {plantInfo.image_url}</h3>}                             */}
+                        </div>   
+                    }
+                    {findESP && 
+                        <form onSubmit={handleConnect}>
+                        <label htmlFor="esp32_ip">ESP32 IP:</label>
+                        <input
+                          type="text"
+                          id="ip"
+                          name="ip"
+                          value={espIP}
+                          onChange={(e) => setEspIP(e.target.value)}
+                          required
+                        />
+                        <br />
+                        <br></br>
+                        <button type="submit">Connect</button>
+                      </form>  
+                    }
+                    <h3>{successMsg}</h3>
                 </div>
+                
             )}
         </div>
     );

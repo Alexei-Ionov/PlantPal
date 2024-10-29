@@ -26,10 +26,11 @@ def add_plant_species(plant_info):
         raise e
     
 def get_info(plant_name):
-    sql = """ SELECT (common_name, genus, family, edible, image_url, growth_rate, toxicity, average_height, light, desired_soil_moisture) FROM plant_species WHERE common_name = %s """
+    sql = """ SELECT common_name, genus, family, edible, image_url, growth_rate, toxicity, average_height, light, desired_soil_moisture FROM plant_species WHERE common_name = %s """
     params = (plant_name,)
     try: 
         result = perform_query(sql, params)
+        print(result)
         common_name, genus, family, edible, image_url, growth_rate, toxicity, average_height, light, desired_soil_moisture = result[0]
         response = {"common_name": common_name, "genus": genus, "family": family, "edible": edible, "image_url": image_url, "growth_rate": growth_rate, "toxicity": toxicity, "average_height": average_height, "light": light, "desired_soil_moisture": desired_soil_moisture}
         return response

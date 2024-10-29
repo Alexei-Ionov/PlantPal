@@ -36,7 +36,7 @@ def get_user_creds(user_id):
       token.write(creds.to_json())
   return creds
 
-def create_event(user_id, user_email, plant_nickname, recurrence):
+def create_event(user_id, user_email, plant_nickname, amount, recurrence):
   #recurrence is a string of DAILY, WEEKLY, MONTHLY, YEARLY
   try:
     creds = get_user_creds(user_id)
@@ -70,6 +70,7 @@ def create_event(user_id, user_email, plant_nickname, recurrence):
     }
     event = service.events().insert(calendarId="primary", body=event).execute()
     print("event created")
+    return 
 
     
 
