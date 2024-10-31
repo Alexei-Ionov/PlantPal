@@ -27,18 +27,22 @@ def add_plant_service(plant, nickname, user_id):
 def add_event_service(user_id, user_email, plant, plant_nickname):
     try: 
         api_response = get_watering_schedule_api(plant)
+        print(api_response)
         plant_info = json.loads(api_response)
         print(plant_info)
         if "recurrence" not in plant_info or "amount" not in plant_info:
             raise Exception("Failed api response")
-        possible_recurrences = {"DAILY", "WEEKLY", "MONTHLY", "YEARLY"}
+        possible_recurrences = {'DAILY': "DAILY", 'WEEKLY': "WEEKLY", 'MONTHLY': "MONTHLY", 'YEARLY': "YEARLY"}
         if plant_info["recurrence"] not in possible_recurrences:
             raise Exception("Failed api response")
         possible_watering_amounts = {"LIGHT", "MEDIUM", "HEAVY"}
         if plant_info["amount"] not in possible_watering_amounts:
             raise Exception("Failed api response")
-        create_event(user_id, user_email, plant_nickname, plant_info["recurrence"], plant_info["amount"])
+        # recurrence = str(plant_info["amount"])
+        recurrence = possible_recurrences[plant_info["recurrence"]]
+        create_event(user_id, user_email, plant_nickname, plant_info["amount"], recurrence)
     except Exception as e:
         raise e
+
 
 

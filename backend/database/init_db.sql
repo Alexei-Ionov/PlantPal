@@ -36,7 +36,6 @@ CREATE TABLE user_plants (
     desired_soil_moisture VARCHAR(255),
     last_update TIMESTAMP DEFAULT NOW(),
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
-    -- species_id INTEGER REFERENCES plant_species(id) ON DELETE CASCADE
 );
 
 CREATE TABLE sensor_readings (

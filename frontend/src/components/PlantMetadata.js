@@ -9,6 +9,33 @@ function PlantMetadata({ plant }) {
     const [plantInfo, setPlantInfo] = useState({});
     const [findESP, setFindESP] = useState(false);
     const [espIP, setEspIP] = useState("");
+
+    const addCalendar = async (event) => { 
+        event.preventDefault();
+        setErrorMsg('');
+        setSuccessMsg('');
+        try { 
+            const response = await fetch('http://127.0.0.1:6969/schedule_calendar', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ plant_nickname: plant.nickname, plant:plant.common_name})
+            });
+            if (!response.ok) { 
+                const err = await response.json();
+                console.log(err)
+                throw new Error("Failed to add event to google calendar");
+            } else { 
+                setSuccessMsg("Successfully added event to Google Calendar");
+            }
+           
+        } catch (err) { 
+            console.log(err);
+            setErrorMsg(err);
+        }
+    };
+
+
     const handleConnect = async (event) => { 
         event.preventDefault();
         setErrorMsg('');
@@ -16,6 +43,7 @@ function PlantMetadata({ plant }) {
         try { 
             const response = await fetch(`http://${espIP}:80/connect`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ token: plant.token }),
             });
@@ -25,9 +53,10 @@ function PlantMetadata({ plant }) {
                 throw new Error("Failed to connect to esp32");
             }
 
-            const updateResponse = await fetch(`http:127.0.0.1//:6969/add_esp`, {
+            const updateResponse = await fetch(`http://127.0.0.1:6969/add_esp`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
                 body: JSON.stringify({ esp32_ip: espIP, token: plant.token}),
             });
             if (!updateResponse.ok) {
@@ -198,6 +227,10 @@ function PlantMetadata({ plant }) {
                         <button type="submit">Connect</button>
                       </form>  
                     }
+                    <br></br>
+                    <button onClick={addCalendar}>
+                        Create Watering Schedule
+                    </button>
                     <h3>{successMsg}</h3>
                 </div>
                 

@@ -1,6 +1,7 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+import json
 load_dotenv()
 client = OpenAI(
     # This is the default and can be omitted
@@ -40,17 +41,48 @@ def get_plant_info_api(plant):
         return get_gpt_response(prompt)
     except Exception as e:
         raise e
+def convert_response(response):
+    #converts a possible invalid api response to a valid one
+    valid_response = {"recurrence": None, "amount": None}
+    def dfs(response):
+        for key in response:
+            if key == "recurrence" or key == "amount":
+                valid_response[key] = response[key].upper()
+            elif type(response[key]) is dict:
+                dfs(response[key])
+    dfs(response)
+    return valid_response
+            
 def get_watering_schedule_api(plant):
    
-    json_ = {
-        "recurrence": f"[DAILY/WEEKLY/MONTLY/YEARLY]",
-        "amount": f"[LIGHT/MEDIUM/HEAVY]"
+    json_example = {
+        "recurrence": "[DAILY, WEEKLY, MONTHLY, or YEARLY]",
+        "amount": "[LIGHT, MEDIUM, or HEAVY]"
     }
+
     prompt = f"""
-                Given the common name of the plant, {plant}, please determine a recommended watering schedule. Include: 1. Watering frequency as a recurrence value (e.g., DAILY, WEEKLY, MONTHLY, YEARLY) 2. The amount of water per watering session (e.g., LIGHT, MEDIUM, HEAVY) in the following json format: {json_}
-                Please factor in general guidelines for the plant’s typical needs, assuming indoor placement with moderate light and average humidity. Example plants could be 'Aloe Vera,' 'Fiddle Leaf Fig,' or 'Peace Lily'.
-            """
+        Given the plant's common name '{plant}', please determine a recommended watering schedule in the following JSON format exactly as shown below, with only "recurrence" and "amount" as the keys and acceptable values as specified.
+
+        Return only valid JSON, formatted precisely like this:
+            {{
+                "recurrence": "<recurrence value>",
+                "amount": "<amount value>"
+            }}
+
+        Notes:
+            - Use one of these values for "recurrence": "DAILY", "WEEKLY", "MONTHLY", or "YEARLY".
+            - Use one of these values for "amount": "LIGHT", "MEDIUM", or "HEAVY".
+            - Ensure that all key, values are in double quotes.
+            Please provide no additional information or commentary; only the JSON object itself in the exact format required.
+
+    """
+
     try: 
-        return get_gpt_response(prompt)
+        api_response = get_gpt_response(prompt)
+
+        
+        # valid_response = convert_response(api_response)
+        # print("AFTER:", valid_response)
+        return api_response
     except Exception as e:
         raise e

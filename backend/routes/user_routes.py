@@ -244,6 +244,37 @@ def add_event_to_calendar():
                 "message": str(e)
             }
         }), 500
-@app.route('/')
-def index():
-    return "hello world!"
+@app.route('/schedule_calendar', methods=["POST"])
+def schedule_calendar():
+    user_id = session["user_id"]
+    user_email = session["user_email"]
+    try:
+        plant_info = request.json
+        if "plant_nickname" not in plant_info:
+            raise InvalidInputError("Missing plant nickname in post request")
+        if "plant" not in plant_info:
+            raise InvalidInputError("Missing plant common name in post request")
+        
+        plant_nickname = plant_info["plant_nickname"]
+        plant = plant_info["plant"]
+        add_event_service(user_id, user_email, plant, plant_nickname)
+        return jsonify({
+            "message": "Successfully added event to calendar"
+        }), 201
+    except InvalidInputError as e:
+        print(e)
+        return jsonify({
+            "error": {
+                "code": 401, 
+                "message": str(e)
+            }
+        }), 401
+    except Exception as e:
+        print(e)
+        return jsonify({
+            "error": {
+                "code": 500, 
+                "message": str(e)
+            }
+        }), 500
+

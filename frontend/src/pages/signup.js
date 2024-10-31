@@ -23,12 +23,12 @@ function SignUp() {
                 body: JSON.stringify({ email, username, password1, password2 }),
                 credentials: 'include',
             });
+            const message = await response.text();
             if (!response.ok) {
-                const message = await response.text();
                 setErrorMessage(message); 
                 throw new Error("Failed to create account");
             }
-            const message = await response.text();
+           
             console.log(message);
             setEmail('');
             setUsername('');

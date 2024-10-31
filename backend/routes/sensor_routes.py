@@ -10,9 +10,9 @@ def add_esp():
         user_id = session["user_id"]
         esp_info = request.json
         if "esp32_ip" not in esp_info:
-            raise Exception InvalidInputError("Missing esp ip")
+            raise InvalidInputError("Missing esp ip")
         if "token" not in esp_info:
-            raise Exception InvalidInputError("Missing token")
+            raise InvalidInputError("Missing token")
         esp32_ip = esp_info["esp32_ip"]
         token = esp_info["token"]
         add_esp_to_user_plant(user_id, token, esp32_ip)
