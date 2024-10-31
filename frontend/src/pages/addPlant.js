@@ -9,6 +9,8 @@ function AddPlant() {
     const [loadingMsg, setLoadingMsg] = useState('')
     const [trie, setTrie] = useState({})
     const [suggestions, setSuggestions] = useState([]);
+
+
     let CURRENT_SUGGESTIONS = [];
     const SUGGESTION_LIMIT = 10;
     const recurseTrie = (root, prefix) => { 
@@ -27,9 +29,10 @@ function AddPlant() {
     }
     
     const getSuggestions = (current_input) => { 
+       
+
         CURRENT_SUGGESTIONS = []
         current_input = current_input.toLowerCase();
-        console.log(current_input);
         if (current_input === '') { 
             setSuggestions([]);
             return;
@@ -37,6 +40,7 @@ function AddPlant() {
         let root = trie;
         for (const letter of current_input) { 
             if (!(letter in root)) {  //no matching prefix
+                
                 setSuggestions([]);
                 return;
             }
@@ -45,6 +49,7 @@ function AddPlant() {
         //otherwise, user input is a valid prefix
         recurseTrie(root, current_input);
         setSuggestions(CURRENT_SUGGESTIONS); 
+    
     }
     
 
@@ -154,7 +159,9 @@ function AddPlant() {
                     />
                 ))}
         </div>
+        {searchTime}
     </form>
+    
     );
 };
 export default AddPlant;
