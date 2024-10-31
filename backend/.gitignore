@@ -12,6 +12,8 @@ env/
 
 # backend/external_api/google_calendar/credentials.json
 # backend/external_api/google_calendar/token*
+external_api/google_calendar/credentials.json
+external_api/google_calendar/*.json
 credentials.json
 token*
 
